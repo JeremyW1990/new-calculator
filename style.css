@@ -25,6 +25,12 @@ header {
     background-color: pink;
     height: 25%;
 }
+.display > div {
+    height: 50%;
+    text-align: end;
+    font-size: 7vmin; 
+    font-weight: bold;
+}
 .buttonContainer {
     background-color: greenyellow;
     height: 75%;

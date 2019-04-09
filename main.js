@@ -13,6 +13,11 @@ function initiateApp(){
     $('.equal').click(equalClickHandler);
 }
 
+
+function updateDisplay(selector, value){
+    $(selector).text(value);
+}
+
 function operatorClickHandler(){
     console.log('before', inputStorage);
     var op = $(this).text();
@@ -20,9 +25,10 @@ function operatorClickHandler(){
     if (isOperators(lastValue)) 
         inputStorage[ inputStorage.length - 1 ] = op
     else 
-        inputStorage.push(op)
+        inputStorage.push(op);
     
     console.log('after', inputStorage);
+    updateDisplay('.expression',inputStorage.join(''));
 }
   
 function numberClickHandler(){
@@ -33,26 +39,41 @@ function numberClickHandler(){
     if (isNaN(lastValue)) {
         inputStorage.push(val);
     } else {
-        inputStorage[ inputStorage.length - 1 ] += val;
+        if (lastValue !== '0') 
+            inputStorage[ inputStorage.length - 1 ] += val 
+        else 
+            inputStorage[ inputStorage.length - 1 ] = val;
     }
     console.log('after', inputStorage);
+    updateDisplay('.expression', inputStorage.join(''));
+
 }
 
 function dotClickHandler(){
     console.log('before', inputStorage);
     var lastValue = inputStorage[ inputStorage.length - 1 ];
-    if (lastValue.indexOf('.') === -1) inputStorage[ inputStorage.length - 1 ] += '.';
+    if (isOperators(lastValue)){
+        inputStorage.push('0.');
+    } else {
+        if (lastValue.indexOf('.') === -1) inputStorage[ inputStorage.length - 1 ] += '.'
+    }
+    updateDisplay('.expression', inputStorage.join(''));
     console.log('after', inputStorage);
-
 }
 
 function cButtonClickHandler(){
     console.log("E clicked");
     inputStorage = ['0'];
+    updateDisplay('.expression', inputStorage.join(''));
+
 }
 
 function cEButtonClickHandler(){
-    console.log('CE clicked.')
+    console.log('CE clicked.');
+    inputStorage.pop(0);
+    updateDisplay('.expression', inputStorage.join(''));
+
+
 }
 
 function equalClickHandler(){
@@ -63,25 +84,26 @@ function equalClickHandler(){
     else 
         result = result[0];
     console.log(result);
+    updateDisplay('.expression', result);
+    updateDisplay('.previousResult', result);
+
 }
 
 
-function calculateWithOneOperator(express){
+function calculateWithOneOperator(expression){
     let result = 0;
-    express[0] = + express[0];
-    express[2] = + express[2];   
-    switch (express[1]) {
+    switch (expression[1]) {
         case '+':
-            result = express[0] + express[2];
+            result = expression[0] + expression[2];
             break;
         case '-':
-            result = express[0] - express[2];
+            result = expression[0] - expression[2];
             break;
         case '×':
-            result = express[0] * express[2];
+            result = expression[0] * expression[2];
             break;
         case '÷':
-            result = express[0] / express[2];
+            result = expression[0] / expression[2];
             break;   
     }
     return result
@@ -89,24 +111,24 @@ function calculateWithOneOperator(express){
 
 
 
-function calculateWithHigherOrderOperators(express){
+function calculateWithHigherOrderOperators(expression){
     var stack = [];
-    stack[0] = express[0];
+    stack[0] = expression[0];
     stackIndex = 0;
-    for (let i = 1; i < express.length; i++){
-        if (!isNaN(express[i])){
+    for (let i = 1; i < expression.length; i++){
+        if (!isNaN(expression[i])){
             if (isHigherOrderOperators(stack[stackIndex])) {
-                result = calculateWithOneOperator([stack[stackIndex-1], stack[stackIndex], express[i]]);
+                result = calculateWithOneOperator([stack[stackIndex-1], stack[stackIndex], expression[i]]);
                 stack.splice(stackIndex - 1, 2, result);
                 console.log(stack);
                 stackIndex --;
             } else {
                 stackIndex ++;
-                stack.push(express[i]);
+                stack.push(expression[i]);
             }
         }else {
             stackIndex ++;
-            stack.push(express[i]);
+            stack.push(expression[i]);
         }
 
     }
@@ -114,15 +136,15 @@ function calculateWithHigherOrderOperators(express){
     return stack;
 }
 
-function calculateWithoutHigherOrderOperators(express) {
-    while (express.length > 3) {        
-        var result = calculateWithoutHigherOrderOperators(express.slice(0,3));
+function calculateWithoutHigherOrderOperators(expression) {
+    while (expression.length > 3) {        
+        var result = calculateWithoutHigherOrderOperators(expression.slice(0,3));
         console.log(result)
-        express = express.slice(3)
-        express.unshift(result.toString());
-        console.log('return express' , express);
+        expression = expression.slice(3)
+        expression.unshift(result.toString());
+        console.log('return expression' , expression);
     }
-    return calculateWithOneOperator(express);
+    return calculateWithOneOperator(expression);
 }
 
 
@@ -132,3 +154,4 @@ function isOperators(c) {
 function isHigherOrderOperators (c) {
     return higerOrderOperators.indexOf(c) === -1 ? false : true;
 }
+
