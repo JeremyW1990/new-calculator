@@ -1,0 +1,65 @@
+body {
+    height: 100vh;
+}
+
+header {
+    background-color: black;
+    height: 15%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+    color: white;
+    font-size: 7vmin;
+}
+
+.calcBody {
+    top: 5%;
+    bottom: 5%;
+    height: 70%;
+    background-color: aquamarine
+}
+.display{
+    background-color: pink;
+    height: 25%;
+}
+.buttonContainer {
+    background-color: greenyellow;
+    height: 75%;
+}
+
+.otherButtons {
+    background-color: gold;
+    height: 100%;
+}
+
+
+.otherButtons > div.row{
+    height: 20%;
+}
+
+.otherButtons > div.row >button{
+    height: 100%;
+    font-size: 5vmin; 
+    font-weight: bold;
+}
+
+
+.operatorContainer {
+    background-color: peru;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.operatorContainer > button {
+    height: 25%;
+}
+.operator {
+    background-color: brown;
+    font-size: 7vmin; 
+    font-weight: bold;
+    color: white;
+}
