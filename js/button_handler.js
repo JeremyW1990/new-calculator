@@ -66,6 +66,8 @@ function clearButtonClickHandler(){
     resetLastKeypressRecord();
     lastKeypressRecord.isClearButton = true;
     updateDisplay('.expression', inputStorage.join(''));
+    updateDisplay('.previousResult', '0');
+
 }
 
 function clearEntryButtonClickHandler(){
