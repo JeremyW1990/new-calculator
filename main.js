@@ -1,10 +1,12 @@
 $(document).ready(initiateApp);
 
-var inputStorage = ['0'];
 const higerOrderOperators = ['×','÷'];
 const operators = ['+', '-','×','÷'];
 var lastCalculation = ['+', '0'];
-var lastestKeyPressIsEqual = false;
+
+var inputStorage = ['0'];
+var latestKeyPressIsEqual = false;
+var latestKeyPressIsOperators = false;
 var result = 0;
 
 
@@ -20,7 +22,8 @@ function initiateApp(){
 // different button click handlers below
 
 function operatorClickHandler(){
-    lastestKeyPressIsEqual = false;
+    latestKeyPressIsEqual = false;
+    latestKeyPressIsOperators = true;
     console.log('before', inputStorage);
     var op = $(this).text();
     var lastValue = inputStorage[ inputStorage.length - 1 ];
@@ -34,26 +37,35 @@ function operatorClickHandler(){
 }
   
 function numberClickHandler(){
-    lastestKeyPressIsEqual = false;
     console.log('before', inputStorage);
     var val = $(this).text();
     var lastValue = inputStorage[ inputStorage.length - 1 ];
-
+    
     if (isNaN(lastValue)) {
         inputStorage.push(val);
     } else {
-        if (lastValue !== '0') 
-            inputStorage[ inputStorage.length - 1 ] += val 
+        if (lastValue !== '0') {
+            if (latestKeyPressIsEqual){
+                inputStorage = [];
+                lastCalculation = ['+', '0'];
+                inputStorage.push(val);
+            } else {
+                inputStorage[ inputStorage.length - 1 ] += val;
+            }
+        }
         else 
-            inputStorage[ inputStorage.length - 1 ] = val;
+        inputStorage[ inputStorage.length - 1 ] = val;
     }
+    latestKeyPressIsOperators = false;
+    latestKeyPressIsEqual = false;
     console.log('after', inputStorage);
     updateDisplay('.expression', inputStorage.join(''));
 
 }
 
 function dotClickHandler(){
-    lastestKeyPressIsEqual = false;
+    latestKeyPressIsOperators = false;
+    latestKeyPressIsEqual = false;
     console.log('before', inputStorage);
     var lastValue = inputStorage[ inputStorage.length - 1 ];
     if (isOperators(lastValue)){
@@ -66,45 +78,60 @@ function dotClickHandler(){
 }
 
 function cButtonClickHandler(){
-    lastestKeyPressIsEqual = false;
+    latestKeyPressIsEqual = false;
+    latestKeyPressIsOperators = false;
     console.log("E clicked");
     inputStorage = ['0'];
+    lastCalculation = ['+', '0'];
     updateDisplay('.expression', inputStorage.join(''));
 
 }
 
 function cEButtonClickHandler(){
-    lastestKeyPressIsEqual = false;
+    latestKeyPressIsEqual = false;
+    latestKeyPressIsOperators = false;
     console.log('CE clicked.');
-    inputStorage.pop(0);
+    inputStorage.pop();
     updateDisplay('.expression', inputStorage.join(''));
 
 
 }
 
 function equalClickHandler(){
-    if (lastestKeyPressIsEqual) {
+    if (latestKeyPressIsEqual) {
         result = operationRepeat(result, lastCalculation);
+        inputStorage = [result];
+
         updateDisplay('.expression', result);
         updateDisplay('.previousResult', result);
         return;
     }
-    lastestKeyPressIsEqual = true;
     console.log('Equal click');
     console.log('inputStorage',inputStorage);
-    if (inputStorage.length >=3) lastCalculation = inputStorage.slice(inputStorage.length - 2, inputStorage.length); 
+    if (inputStorage.length >=3){
+
+        lastCalculation = inputStorage.slice(inputStorage.length - 2, inputStorage.length); 
+    }     
     // record the last two user input for operation repeat .i.e 1 + 1 === 4;
     console.log('lastCalculation',lastCalculation);
     result = calculateWithHigherOrderOperators(inputStorage);
-    if (result.length > 1) 
+    if (result.length >= 3) {
         result = calculateWithoutHigherOrderOperators(result) 
-    else 
-        result = result[0];
-    console.log(result);
+    }
+
+
+    if (result.length === 2 ){
+        operationRollover()
+    };
+    result = typeof result ==='number'? result: result[0];
+    latestKeyPressIsOperators = false;
+    latestKeyPressIsEqual = true;
+    
+    console.log('finaly result:' , result);
+    inputStorage = [result];
     updateDisplay('.expression', result);
     updateDisplay('.previousResult', result);
     console.log('inputStorage',inputStorage);
-
 }
 
 
@@ -112,7 +139,7 @@ function equalClickHandler(){
 
 function calculateWithOneOperator(expression){
     let result = 0;
-
+    if (expression.length < 3) return expression;
     console.log('calculateWithOneOperator',expression)
     switch (expression[1]) {
         case '+':
@@ -122,13 +149,13 @@ function calculateWithOneOperator(expression){
             result = +expression[0] - expression[2];
             break;
         case '×':
-            result = +expression[0] * expression[2];
+            result = +expression[0] *  expression[2];
             break;
         case '÷':
             result = +expression[0] / expression[2];
             break;   
     }
-    return result
+    return result;
 }
 
 
@@ -169,11 +196,26 @@ function calculateWithoutHigherOrderOperators(expression) {
     return calculateWithOneOperator(expression);
 }
 
+
+// Special case :  Operation Repeat 1 + 1 === 4;
 function operationRepeat(result, lastCalculation) {
-    console.log('operationRepeat', result, lastCalculation)
+    console.log('operationRepeat:');
+    console.log('result: ', result);
+    console.log('lastCalculation:' , lastCalculation);
     return calculateWithOneOperator([result].concat(lastCalculation));
 
 }
+
+// Special case :  operation rollover 1 + 1 + = + = 8
+function operationRollover (){
+    result.push(result[0]);
+    lastCalculation = result.slice(result.length - 2, result.length);
+    console.log('operationRollover:');
+    console.log('lastCalculation:' , lastCalculation);
+    result = calculateWithoutHigherOrderOperators(result);
+}
+
+
 
 
 
@@ -187,5 +229,7 @@ function isHigherOrderOperators (c) {
 }
 
 function updateDisplay(selector, value){
+    if (value == 'Infinity') value = "Error";
     $(selector).text(value);
+
 }
