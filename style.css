@@ -28,8 +28,7 @@ header {
 .display > div {
     height: 50%;
     text-align: end;
-    font-size: 7vmin; 
-    font-weight: bold;
+    font-size: 5vmin; 
 }
 .buttonContainer {
     background-color: greenyellow;

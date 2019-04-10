@@ -40,10 +40,9 @@ function operatorClickHandler(){
 
 
 function decimalPointClickHandler(){
-
     console.log('before', inputStorage);
     var lastValue = inputStorage[ inputStorage.length - 1 ];
-    if (lastKeypressRecord.isOperators){
+    if (lastKeypressRecord.operators){
         inputStorage.push('0.');
         resetLastKeypressRecord();
         lastKeypressRecord.isDecimalPoint = true;
