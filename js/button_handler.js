@@ -91,9 +91,9 @@ function clearEntryButtonClickHandler(){
 }
 
 function equalClickHandler(){
-    console.log('Equal click');
+    console.log('Equal sign click');
     if (lastKeypressRecord.isEqualSign) {
-        console.log('Successive Equal Sign Detected...');
+        console.log('Successive Equal Sign Detected...'); // 1 + 1 == 3;
         result = calculateWhenEqualSignSuccessivePressed(result, lastCalculation);
         inputStorage = [result];
         updateDisplay('.expression', result);
@@ -103,10 +103,13 @@ function equalClickHandler(){
     
     if (lastKeypressRecord.operators){
         console.log('Operation Rollover Detected...')
+        // 3 * = 9 ; higher Operators
+        //  3 + = 6; normal Operators
         operationRolloverType = isHigherOrderOperators(lastKeypressRecord.operators) ? 'higherOperators' : 'normalOperators';
     }
     
-    calculationInit();
+    calculationInit();//where the calculation starts
+
     console.log('inputStorage',inputStorage);
     inputStorage = [result];
     console.log('inputStorage',inputStorage);

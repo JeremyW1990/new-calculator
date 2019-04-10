@@ -11,6 +11,9 @@ function resetLastKeypressRecord(){
     }
 }
 
+//the function below is for operation repeat: when user keeps pressing equal sign , 
+//we need to remember that last calculation and re-apply to the final result
+//i.e  1 + 2 === 7
 function recordLastCalculation(operator, number){
     lastCalculation = [operator, number];
     console.log("recordLastCalculation: ", lastCalculation)
