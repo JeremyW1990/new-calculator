@@ -4,209 +4,160 @@ const higerOrderOperators = ['×','÷'];
 const operators = ['+', '-','×','÷'];
 
 
+var result = 0;
 var inputStorage = ['0'];
 var lastCalculation = [];
+var operationRolloverType = null;
 
+var lastKeypressRecord = {
+    isClearButton : true,
+    isEqualSign : false,
+    isDecimalPoint : false,
+    operators : null,
+    numbers : null
+}
 
-
-var lastKeyPressIsEqual = false;
-var lastKeyPressIsOperators = false;
-var lastKeyPressIsDot = false;
-var lastKeyPressNumber = false;
-var lastKeyPressIsC = true;
-var operationRollover = false;
-var result = 0;
 
 
 function initiateApp(){
     $('.number').click(numberClickHandler);
-    $('.dot').click(dotClickHandler);
+    $('.dot').click(decimalPointClickHandler);
     $('.operator').click(operatorClickHandler);
-    $('.clear').click(cButtonClickHandler);
-    $('.clearEntry').click(cEButtonClickHandler);
+    $('.clear').click(clearButtonClickHandler);
+    $('.clearEntry').click(clearEntryButtonClickHandler);
     $('.equal').click(equalClickHandler);
 }
 
-// different button click handlers below
+// ******************** DIFFERENT BUTTON CLICK HANDLERS BELOW ***********************************
 
-function operatorClickHandler(){
-    console.log('before', inputStorage);
-    var op = $(this).text();
-    if (lastKeyPressIsOperators) {
-        inputStorage.pop();
-        inputStorage.push(op);
-    }
-    else 
-        inputStorage.push(op);
-    console.log('after', inputStorage);
-    updateDisplay('.expression', inputStorage.join(''));
-    lastKeyPressIsEqual = false;
-    lastKeyPressIsOperators = true;
-    lastKeyPressIsDot = false;
-    lastKeyPressNumber = false;
-    lastKeyPressIsC = false;
-
-
-}
-  
 function numberClickHandler(){
     console.log('before', inputStorage);
     var val = $(this).text();
     
-    if (lastKeyPressIsC) {
-        inputStorage[0] =  val;
-    } else 
-    if (lastKeyPressNumber) {
-
-            inputStorage[ inputStorage.length - 1 ] += val;
-
+    if (lastKeypressRecord.isClearButton) {
+        inputStorage[0] = val;
     } 
-    else if (lastKeyPressIsEqual){
+    else if (lastKeypressRecord.numbers || lastKeypressRecord.isDecimalPoint) {
+        inputStorage[ inputStorage.length - 1 ] += val;
+    } 
+    else if (lastKeypressRecord.isEqualSign){
         inputStorage = [];
         inputStorage.push(val);
-        //reset lastCalculate here ...
-    } else if (lastKeyPressIsDot){
-        inputStorage[ inputStorage.length - 1 ] += val
-    } else if (lastKeyPressIsOperators) {
+    } 
+    else if (lastKeypressRecord.operators) {
         inputStorage.push(val);
     }
-
     console.log('after', inputStorage);
     updateDisplay('.expression', inputStorage.join(''));
-    lastKeyPressIsOperators = false;
-    lastKeyPressIsEqual = false;
-    lastKeyPressIsDot = false;
-    lastKeyPressNumber = val;
-    lastKeyPressIsC = false;
-
-
+    resetLastKeypressRecord();
+    lastKeypressRecord.numbers = val;
 }
 
-function dotClickHandler(){
+function operatorClickHandler(){
+    console.log('before', inputStorage);
+    var op = $(this).text();
+    if (lastKeypressRecord.operators) {
+        inputStorage.pop();
+        inputStorage.push(op);
+    }
+    else inputStorage.push(op);
+    console.log('after', inputStorage);
+    updateDisplay('.expression', inputStorage.join(''));
+    resetLastKeypressRecord();
+    lastKeypressRecord.operators = op;
+}
+  
+
+
+function decimalPointClickHandler(){
 
     console.log('before', inputStorage);
     var lastValue = inputStorage[ inputStorage.length - 1 ];
-    if (lastKeyPressIsOperators){
+    if (lastKeypressRecord.isOperators){
         inputStorage.push('0.');
-    } else {
-        if (lastValue.indexOf('.') === -1) {
-            inputStorage[ inputStorage.length - 1 ] += '.'
-            lastKeyPressIsDot = true;
-            lastKeyPressIsOperators = false;
-            lastKeyPressIsEqual = false;
-            lastKeyPressNumber = null;
-            lastKeyPressIsC = false;
+        resetLastKeypressRecord();
+        lastKeypressRecord.isDecimalPoint = true;
 
-        }
+    } 
+    else if (lastValue.indexOf('.') === -1) {
+        inputStorage[ inputStorage.length - 1 ] += '.'
+        resetLastKeypressRecord();
+        lastKeypressRecord.isDecimalPoint = true;
     }
     updateDisplay('.expression', inputStorage.join(''));
     console.log('after', inputStorage);
 }
 
-function cButtonClickHandler(){
+function clearButtonClickHandler(){
     
-    console.log("E clicked");
+    console.log("Clear clicked");
     inputStorage = ['0'];
-    lastCalculation = ['+', '0'];
+    lastCalculation = [];
+    operationRolloverType = null;
+    resetLastKeypressRecord();
+    lastKeypressRecord.isClearButton = true;
     updateDisplay('.expression', inputStorage.join(''));
-    
-    lastKeyPressIsEqual = false;
-    lastKeyPressIsOperators = false;
-    lastKeyPressIsEqual = false;
-    lastKeyPressNumber = null;
-    operationRollover = false;
-    lastKeyPressIsC = true;
-
-
 }
 
-function cEButtonClickHandler(){
+function clearEntryButtonClickHandler(){
 
-    console.log('CE clicked.');
+    console.log('Clear Entry clicked.');
     inputStorage.pop();
     updateDisplay('.expression', inputStorage.join(''));
-
-    lastKeyPressIsEqual = false;
-    lastKeyPressIsOperators = false;
-    lastKeyPressIsEqual = false; 
-    lastKeyPressNumber = null;
-    lastKeyPressIsC = false;
-    
-
-
-
+    resetLastKeypressRecord();
 }
 
 function equalClickHandler(){
-    if (lastKeyPressIsEqual) {
-        result = operationRepeat(result, lastCalculation);
+    console.log('Equal click');
+    if (lastKeypressRecord.isEqualSign) {
+        console.log('Successive Equal Sign Detected...');
+        result = calculateWhenEqualSignSuccessivePressed(result, lastCalculation);
         inputStorage = [result];
-
         updateDisplay('.expression', result);
         updateDisplay('.previousResult', result);
         return;
     }
-
-    if (lastKeyPressIsOperators) operationRollover = true;
-    console.log('Equal click');
-    console.log('inputStorage',inputStorage);
-
-    calculate();
-
-    // if (result.length === 2 ){
-    //     operationRollover()
-    // };
-    // result = typeof result ==='number'? result: result[0];
-    lastKeyPressIsEqual = false;
-    lastKeyPressIsOperators = false;
-    lastKeyPressIsEqual = true; 
-    lastKeyPressNumber = null;
-    lastKeyPressIsC = false;
-
-
     
-    console.log('finaly result:' , result);
+    if (lastKeypressRecord.operators){
+        console.log('Operation Rollover Detected...')
+        operationRolloverType = isHigherOrderOperators(lastKeypressRecord.operators) ? 'higherOperators' : 'normalOperators';
+    }
+    
+    calculationInit();
+    console.log('inputStorage',inputStorage);
     inputStorage = [result];
+    console.log('inputStorage',inputStorage);
+    console.log('finaly result:', result);
     updateDisplay('.expression', result);
     updateDisplay('.previousResult', result);
-    console.log('inputStorage',inputStorage);
+    resetLastKeypressRecord();
+    lastKeypressRecord.isEqualSign = true;
 }
 
 
-// core calculation logic below
+// **************************  CORE CALCULATION LOGIC BELOW  *********************************
 
-function calculate() {
+function calculationInit() {
     if (inputStorage.length === 1) {
         result = inputStorage[0];
     }else {
         result = calculateWithHigherOrderOperators(inputStorage);
-        if (operationRollover && isHigherOrderOperators(inputStorage[inputStorage.length -1])) {
-            result.push(result[result.length -2]);
-            console.log('After rollover munipulation result ', result);
-            result = calculateWithHigherOrderOperators(result);
-            operationRollover = false;
-        }
+        if (operationRolloverType === 'higherOperators') calculateOperationRolloverCase(operationRolloverType);
     }
-    if (typeof result === 'object' && result.length > 1) {
-        result = calculateWithoutHigherOrderOperators(result) ;
-        if (operationRollover) {
 
-            result.push(result[result.length -2]);
-            console.log('After rollover munipulation result ', result);
-            result = calculateWithoutHigherOrderOperators(result);
-        }
+    if (typeof result === 'object' && result.length > 1) {
+        result = calculateWithoutHigherOrderOperators(result);
+        if (operationRolloverType === 'normalOperators') calculateOperationRolloverCase(operationRolloverType);
     }
     return result;
 
 }
 
 function calculateWithOneOperator(expression){
-    let result = 0;
-    if (expression.length < 3 ) {
-        return expression
-    }
-    recordLastCalculation(expression[1], expression[2])
-    console.log('calculateWithOneOperator',expression)
+    if (expression.length < 3 ) return expression;
+    recordLastCalculation(expression[1], expression[2]);
+
+    console.log('calculateWithOneOperator', expression)
     switch (expression[1]) {
         case '+':
             result = Number(expression[0]) + Number(expression[2]);
@@ -231,21 +182,15 @@ function calculateWithHigherOrderOperators(expression){
     stack[0] = expression[0];
     stackIndex = 0;
     for (let i = 1; i < expression.length; i++){
-        if (!isNaN(expression[i])){ //if it is a number
-            if (isHigherOrderOperators(stack[stackIndex])) {
+        if ( (!isNaN(expression[i]) && (isHigherOrderOperators(stack[stackIndex])))) { //if it is a number
                 result = calculateWithOneOperator([stack[stackIndex-1], stack[stackIndex], expression[i]]);
                 stack.splice(stackIndex - 1, 2, result);
                 console.log(stack);
                 stackIndex --;
-            } else {
-                stackIndex ++;
-                stack.push(expression[i]);
-            }
-        }else {
+        } else {
             stackIndex ++;
             stack.push(expression[i]);
         }
-
     }
     console.log(stack)
     return stack;
@@ -254,7 +199,6 @@ function calculateWithHigherOrderOperators(expression){
 function calculateWithoutHigherOrderOperators(expression) {
     while (expression.length > 3) {        
         var result = calculateWithoutHigherOrderOperators(expression.slice(0,3));
-        console.log(result)
         expression = expression.slice(3)
         expression.unshift(result.toString());
         console.log('return expression' , expression);
@@ -263,9 +207,9 @@ function calculateWithoutHigherOrderOperators(expression) {
 }
 
 
-// Special case :  Operation Repeat 1 + 1 === 4;
-function operationRepeat(result, lastCalculation) {
-    console.log('operationRepeat:');
+// Special case :  Equal Sign Repeat 1 + 1 === 4;
+function calculateWhenEqualSignSuccessivePressed(result, lastCalculation) {
+    console.log('calculateWhenEqualSignSuccessivePressed:');
     console.log('result: ', result);
     console.log('lastCalculation:' , lastCalculation);
     return calculateWithOneOperator([result].concat(lastCalculation));
@@ -273,16 +217,27 @@ function operationRepeat(result, lastCalculation) {
 }
 
 // Special case :  operation rollover 1 + 1 + = + = 8
-function operationRollover (){
-    result.push(result[0]);
-    result = calculateWithoutHigherOrderOperators(result);
+function calculateOperationRolloverCase (operationRolloverType){
+    
+    console.log("operationRolloverType :" , operationRolloverType);
+    result.push(result[result.length -2]);
+    console.log('After rollover munipulation result ', result);
+    result = operationRolloverType === 'higherOperators' ? calculateWithHigherOrderOperators(result) : calculateWithoutHigherOrderOperators(result);
 }
 
 
+//*************************************AUXILLARY FUNCTION BELOW ******************************** 
 
-
-
-//auxllery function below
+function resetLastKeypressRecord(){
+    console.log(lastKeypressRecord);
+    lastKeypressRecord = {
+        isClearButton : false,
+        isEqualSign : false,
+        isDecimalPoint : false,
+        operators : null,
+        numbers : null
+    }
+}
 
 function recordLastCalculation(operator, number){
     lastCalculation = [operator, number];
