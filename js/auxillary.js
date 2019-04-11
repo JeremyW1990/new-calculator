@@ -27,7 +27,7 @@ function isHigherOrderOperators (c) {
 }
 
 function updateDisplay(selector, value){
-    if (value == 'Infinity') value = "Error";
+    if (value == 'Infinity' || value =='-Infinity') value = "Error";
     $(selector).text(value);
 
 }

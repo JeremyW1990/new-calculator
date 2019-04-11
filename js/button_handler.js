@@ -88,6 +88,7 @@ function clearEntryButtonClickHandler(){
             updateDisplay('.expression', inputStorage.join(''))
     }
 
+
 }
 
 function equalClickHandler(){
@@ -102,9 +103,11 @@ function equalClickHandler(){
     }
     
     if (lastKeypressRecord.operators){
+
         console.log('Operation Rollover Detected...')
         // 3 * = 9 ; higher Operators
         //  3 + = 6; normal Operators
+        operationRolloverType = null;
         operationRolloverType = isHigherOrderOperators(lastKeypressRecord.operators) ? 'higherOperators' : 'normalOperators';
     }
     
