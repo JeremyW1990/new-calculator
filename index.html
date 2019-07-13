@@ -11,56 +11,82 @@
     <script src="./js/auxillary.js"></script>
     <script src="./js/button_handler.js"></script>
     <script src="./js/calculation.js"></script>
+    <script src='./test/test.js'></script>
     <script src="./main.js"></script>
 </head>
 <body>
-    <break></break>
-    <header>
-        <div class="title">CALCULATOR</div>
-    </header>
-    <div class="calcBody col-xs-12 col-sm-10 col-sm-offset-1 col-md-4 col-md-offset-4">
-        <div class="display row">
-            <div class="expression">0</div>
-            <div class="previousResult"></div>
-        </div>
-        <div class="buttonContainer row">
-            <div class="otherButtons col-xs-9">
-                <div class="row">
-                    <button class="clear col-xs-6">C</button>
-                    <button class="clearEntry col-xs-6">CE</button>
 
+
+    <div class="main container-fluid">
+
+        <div class="calculator-container col-xs-12 col-md-6">
+
+            <div class="calculator-body container">
+                 <div class="display row">
+                    <div class="expression">0</div>
+                    <div class="previousResult">0</div>
                 </div>
-                <div class="row">
-                    <button class="number col-xs-4">7</button>
-                    <button class="number col-xs-4">8</button>
-                    <button class="number col-xs-4">9</button>
+                <div class="button-container row">
+                    <div class="other-buttons col-xs-9">
+                        <div class="row">
+                            <button class="clear col-xs-6">C</button>
+                            <button class="clearEntry col-xs-6">CE</button>
+                        </div>
+                        <div class="row">
+                            <button class="number col-xs-4">7</button>
+                            <button class="number col-xs-4">8</button>
+                            <button class="number col-xs-4">9</button>
+                        </div>
+                        <div class="row">
+                            <button class="number col-xs-4">4</button>
+                            <button class="number col-xs-4">5</button>
+                            <button class="number col-xs-4">6</button>
+                        </div>
+                        <div class="row">
+                            <button class="number number-1 col-xs-4">1</button>
+                            <button class="number col-xs-4">2</button>
+                            <button class="number col-xs-4">3</button>                  
+                        </div>
+                        <div class="row">
+                            <button class="number col-xs-4">0</button>
+                            <button class="dot col-xs-4">.</button>
+                            <button class="equal col-xs-4">=</button>                  
+                        </div>
+
+                    </div>
+                    <div class="operator-container col-xs-3">
+                        <button class='operator row'>÷</button>
+                        <button class='operator row'>×</button>
+                        <button class='operator row'>-</button>
+                        <button class='operator row'>+</button>
+
+                    </div>
                 </div>
-                <div class="row">
-                    <button class="number col-xs-4">4</button>
-                    <button class="number col-xs-4">5</button>
-                    <button class="number col-xs-4">6</button>
-                </div>
-                <div class="row">
-                    <button class="number col-xs-4">1</button>
-                    <button class="number col-xs-4">2</button>
-                    <button class="number col-xs-4">3</button>                  
-                </div>
-                <div class="row">
-                    <button class="number col-xs-4">0</button>
-                    <button class="dot col-xs-4">.</button>
-                    <button class="equal col-xs-4">=</button>                  
-                </div>
+            </div>
+        </div>
+
+        <div class="test-container col-xs-12 col-md-6">
+            <div class="test-body">
+                <h1 class="test-title">Automation Test Spreadsheet</h1>
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Test Id</th>
+                            <th>Expression</th>
+                            <th>Expect</th>
+                            <th>Actual</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <button class="btn btn-primary btn-test">Run Test</button>
 
             </div>
-            <div class="operatorContainer col-xs-3">
-                <button class='operator row'>÷</button>
-                <button class='operator row'>×</button>
-                <button class='operator row'>-</button>
-                <button class='operator row'>+</button>
 
-            </div>
         </div>
+
     </div>
+    
 
 </body>
 </html>

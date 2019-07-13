@@ -2,64 +2,85 @@ body {
     height: 100vh;
 }
 
-header {
-    background-color: black;
-    height: 15%;
+
+.main {
+    height: 100%;
+}
+
+.calculator-container {
+    height: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
 }
 
-.title {
-    color: white;
-    font-size: 7vmin;
+.calculator-body{
+    height: 95%;
+    width: 80%;
 }
 
-.calcBody {
-    top: 5%;
-    bottom: 5%;
-    height: 70%;
-    background-color: aquamarine
+@media (max-width: 768px) {
+    .calculator-container, .calculator-body,
+    .test-container, .test-body{
+        width: 100%;
+        padding: 3px;
+    }
+
+    .display > div {
+        font-size: 20vmin; 
+    }
 }
+
+
 .display{
     background-color: pink;
     height: 25%;
+    font-weight: bold;
+    padding-right: 10px;     
 }
+
+
 .display > div {
+    padding-top: 10px;
     height: 50%;
     text-align: end;
-    font-size: 5vmin; 
+    font-size: 7vmin; 
 }
-.buttonContainer {
+
+@media (max-width: 415px) {
+    .display > div {
+        font-size: 12vmin; 
+    }
+}
+.button-container {
     background-color: greenyellow;
     height: 75%;
 }
 
-.otherButtons {
+.other-buttons {
     background-color: gold;
     height: 100%;
 }
 
 
-.otherButtons > div.row{
+.other-buttons > div.row{
     height: 20%;
 }
 
-.otherButtons > div.row >button{
+.other-buttons > div.row >button{
     height: 100%;
     font-size: 5vmin; 
     font-weight: bold;
 }
 
 
-.operatorContainer {
+.operator-container {
     background-color: peru;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
-.operatorContainer > button {
+.operator-container > button {
     height: 25%;
 }
 .operator {
@@ -68,3 +89,15 @@ header {
     font-weight: bold;
     color: white;
 }
+
+/* Test area */
+
+.test-title{
+    font-weight: bold
+}
+
+.test-title, .table, .table th {
+    text-align: center;
+}
+
+
