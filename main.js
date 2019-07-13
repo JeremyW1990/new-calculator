@@ -1,3 +1,4 @@
+
 $(document).ready(initiateApp);
 
 const higerOrderOperators = ['×','÷'];
@@ -24,6 +25,8 @@ function initiateApp(){
     $('.clear').click(clearButtonClickHandler);
     $('.clearEntry').click(clearEntryButtonClickHandler);
     $('.equal').click(equalClickHandler);
+    $('.btn-test').click(runRegressionTest);
+    renderTestCaseToTable();
 }
 
 

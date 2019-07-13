@@ -1,6 +1,6 @@
 // ******************** DIFFERENT BUTTON CLICK HANDLERS BELOW ***********************************
 
-function numberClickHandler(){
+function numberClickHandler(val){
     console.log('before', inputStorage);
     var val = $(this).text();
     
@@ -88,9 +88,8 @@ function clearEntryButtonClickHandler(){
             updateDisplay('.expression', inputStorage.join(''))
     }
 
-
 }
-
+/* export the final result for integration testing  */
 function equalClickHandler(){
     console.log('Equal sign click');
     if (lastKeypressRecord.isEqualSign) {
@@ -121,5 +120,7 @@ function equalClickHandler(){
     updateDisplay('.previousResult', result);
     resetLastKeypressRecord();
     lastKeypressRecord.isEqualSign = true;
+
+    return result;
 }
 
