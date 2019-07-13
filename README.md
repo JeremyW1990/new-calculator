@@ -9,9 +9,10 @@ Website: https://calculator.jeremywang.dev
 2. Open the index.html
 
 ## How to Run Automation Test
-1. Click the button `Run Test`, all test cases in spread sheet will be automatically running.
+1. Click the button `Run Test`, all test cases in spread sheet will be automatically running</br>
 ![Test cases](./test/test-cases.jpg)
 
 2. Passed test case will be marked to green
-3. Failed test case will be marked to red
-![Result](./test/result.jpg)
+3. Failed test case will be marked to red</br>
+
+![Result](./test/results.jpg)
