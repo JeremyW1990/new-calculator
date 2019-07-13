@@ -1,0 +1,103 @@
+body {
+    height: 100vh;
+}
+
+
+.main {
+    height: 100%;
+}
+
+.calculator-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.calculator-body{
+    height: 95%;
+    width: 80%;
+}
+
+@media (max-width: 768px) {
+    .calculator-container, .calculator-body,
+    .test-container, .test-body{
+        width: 100%;
+        padding: 3px;
+    }
+
+    .display > div {
+        font-size: 20vmin; 
+    }
+}
+
+
+.display{
+    background-color: pink;
+    height: 25%;
+    font-weight: bold;
+    padding-right: 10px;     
+}
+
+
+.display > div {
+    padding-top: 10px;
+    height: 50%;
+    text-align: end;
+    font-size: 7vmin; 
+}
+
+@media (max-width: 415px) {
+    .display > div {
+        font-size: 12vmin; 
+    }
+}
+.button-container {
+    background-color: greenyellow;
+    height: 75%;
+}
+
+.other-buttons {
+    background-color: gold;
+    height: 100%;
+}
+
+
+.other-buttons > div.row{
+    height: 20%;
+}
+
+.other-buttons > div.row >button{
+    height: 100%;
+    font-size: 5vmin; 
+    font-weight: bold;
+}
+
+
+.operator-container {
+    background-color: peru;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.operator-container > button {
+    height: 25%;
+}
+.operator {
+    background-color: brown;
+    font-size: 7vmin; 
+    font-weight: bold;
+    color: white;
+}
+
+/* Test area */
+
+.test-title{
+    font-weight: bold
+}
+
+.test-title, .table, .table th {
+    text-align: center;
+}
+
+
